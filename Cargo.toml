@@ -2,8 +2,12 @@
 name = "nonzero"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+categories = ["rust-patterns"]
+documentation = "https://docs.rs/nonzero/"
+repository = "https://github.com/jerry73204/nonzero.git"
+homepage = "https://github.com/jerry73204/nonzero"
+readme = "README.md"
+license = "MIT"
 
 [lib]
 proc-macro = true
