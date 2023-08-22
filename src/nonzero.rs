@@ -3,6 +3,31 @@ use num_traits::Zero;
 use proc_macro2::TokenStream;
 use quote::quote;
 
+/// # Compilation failure tests
+///
+/// ## `unsigned integer cannot be negative`
+///
+/// ```compile_fail
+/// use nonzero::nonzero as nz;
+///
+/// let _ = nz!(-1usize);
+/// ```
+///
+/// ## `zero is not allowed`
+///
+/// ```compile_fail
+/// use nonzero::nonzero as nz;
+///
+/// let _ = nz!(0u8);
+/// ```
+///
+/// ## `suffix is not supported`
+///
+/// ```compile_fail
+/// use nonzero::nonzero as nz;
+///
+/// let _ = nz!(1_is_not_supported);
+/// ```
 pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
     let SignedInteger {
         is_negative,
