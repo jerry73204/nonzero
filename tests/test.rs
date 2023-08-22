@@ -27,3 +27,30 @@ fn test() {
     assert_eq!(nz!(-1i32), NonZeroI32::new(-1).unwrap());
     assert_eq!(nz!(-1i64), NonZeroI64::new(-1).unwrap());
 }
+
+#[test]
+fn type_inference() {
+    #[derive(Debug, PartialEq)]
+    struct MyNonZeroIsize(NonZeroIsize);
+    assert_eq!(
+        MyNonZeroIsize(nz!(-1)),
+        MyNonZeroIsize(NonZeroIsize::new(-1).unwrap()),
+    );
+
+    #[derive(Debug, PartialEq)]
+    struct MyNonZeroU16(NonZeroU16);
+    assert_eq!(
+        MyNonZeroU16(nz!(1234)),
+        MyNonZeroU16(NonZeroU16::new(1234).unwrap()),
+    );
+
+    fn non_zero() -> NonZeroI64 {
+        nz!(9)
+    }
+    assert_eq!(non_zero(), NonZeroI64::new(9).unwrap());
+
+    fn double(val: NonZeroUsize) -> NonZeroUsize {
+        val.checked_mul(NonZeroUsize::new(2).unwrap()).unwrap()
+    }
+    assert_eq!(double(nz!(2500)), NonZeroUsize::new(5000).unwrap());
+}

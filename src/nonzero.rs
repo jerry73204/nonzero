@@ -1,5 +1,5 @@
 use crate::SignedInteger;
-use num_traits::Zero;
+use num_traits::{Bounded, Signed, Unsigned, Zero};
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -19,6 +19,25 @@ use quote::quote;
 /// use nonzero::nonzero as nz;
 ///
 /// let _ = nz!(0u8);
+/// ```
+///
+/// ## `cannot infer type`
+///
+/// ```compile_fail
+/// use std::num::NonZeroU32;
+/// use nonzero::nonzero as nz;
+///
+/// // NonZeroU32 implements PartialEq to many types.
+/// assert_eq!(nz!(123), NonZeroU32::new(123).unwrap());
+/// ```
+///
+/// ## `the trait `From<NonZeroU32>` is not implemented for `NonZeroI8``
+///
+/// ```compile_fail
+/// use std::num::NonZeroI8;
+/// use nonzero::nonzero as nz;
+///
+/// let _val: NonZeroI8 = nz!(123456789);
 /// ```
 ///
 /// ## `suffix is not supported`
@@ -135,8 +154,75 @@ pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
                 }
             }
         }
-        (_, "") => {
-            return Err(syn::Error::new(span, "suffix is required"));
+        (false, "") => {
+            let val: u128 = lit.base10_parse()?;
+            check_zero(&lit, val)?;
+            if in_unsigned_range::<u8>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroU8::new_unchecked(#lit).into()
+                    }
+                }
+            } else if in_unsigned_range::<u16>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroU16::new_unchecked(#lit).into()
+                    }
+                }
+            } else if in_unsigned_range::<u32>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroU32::new_unchecked(#lit).into()
+                    }
+                }
+            } else if in_unsigned_range::<u64>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroU64::new_unchecked(#lit).into()
+                    }
+                }
+            } else {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroU128::new_unchecked(#lit).into()
+                    }
+                }
+            }
+        }
+        (true, "") => {
+            let val: i128 = lit.base10_parse()?;
+            check_zero(&lit, val)?;
+            if in_signed_range::<i8>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroI8::new_unchecked(#neg #lit).into()
+                    }
+                }
+            } else if in_signed_range::<i16>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroI16::new_unchecked(#neg #lit).into()
+                    }
+                }
+            } else if in_signed_range::<i32>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroI32::new_unchecked(#neg #lit).into()
+                    }
+                }
+            } else if in_signed_range::<i64>(val) {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroI64::new_unchecked(#neg #lit).into()
+                    }
+                }
+            } else {
+                quote! {
+                    unsafe {
+                        core::num::NonZeroI128::new_unchecked(#neg #lit).into()
+                    }
+                }
+            }
         }
         (_, suffix) => {
             return Err(syn::Error::new(
@@ -155,4 +241,24 @@ fn check_zero(lit: impl quote::ToTokens, val: impl Zero) -> syn::Result<()> {
     } else {
         Ok(())
     }
+}
+
+fn in_unsigned_range<T>(val: u128) -> bool
+where
+    T: Bounded + Unsigned,
+    u128: From<T>,
+{
+    let min = u128::from(T::min_value());
+    let max = u128::from(T::max_value());
+    (min..=max).contains(&val)
+}
+
+fn in_signed_range<T>(val: i128) -> bool
+where
+    T: Bounded + Signed,
+    i128: From<T>,
+{
+    let min = i128::from(T::min_value());
+    let max = i128::from(T::max_value());
+    (min..=max).contains(&val)
 }
