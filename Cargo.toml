@@ -1,6 +1,6 @@
 [package]
 name = "nonzero"
-version = "0.1.0"
+version = "0.2.0"
 description = "Statically checked non-zero integers"
 edition = "2021"
 categories = ["rust-patterns"]
