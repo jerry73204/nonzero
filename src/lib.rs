@@ -2,6 +2,7 @@ mod nonzero;
 
 use proc_macro::TokenStream;
 use proc_macro2::Span;
+use syn::parse::{Parse, ParseStream, Result};
 
 pub(crate) struct SignedInteger {
     is_negative: bool,
@@ -9,8 +10,8 @@ pub(crate) struct SignedInteger {
     span: Span,
 }
 
-impl syn::parse::Parse for SignedInteger {
-    fn parse(input: syn::parse::ParseStream) -> syn::parse::Result<Self> {
+impl Parse for SignedInteger {
+    fn parse(input: ParseStream) -> Result<Self> {
         use syn::Token;
 
         let span = input.span();

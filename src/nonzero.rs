@@ -1,9 +1,10 @@
 use crate::SignedInteger;
 use num_traits::Zero;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
+use syn::{Error, Result};
 
-pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
+pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
     let SignedInteger {
         is_negative,
         literal: lit,
@@ -63,7 +64,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
             }
         }
         (true, "usize" | "u8" | "u16" | "u32" | "u64") => {
-            return Err(syn::Error::new(span, "unsigned integer cannot be negative"))
+            return Err(Error::new(span, "unsigned integer cannot be negative"))
         }
         (_, "isize") => {
             let val: isize = lit.base10_parse()?;
@@ -111,10 +112,10 @@ pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
             }
         }
         (_, "") => {
-            return Err(syn::Error::new(span, "suffix is required"));
+            return Err(Error::new(span, "suffix is required"));
         }
         (_, suffix) => {
-            return Err(syn::Error::new(
+            return Err(Error::new(
                 span,
                 format!("the suffix '{}' is not supported", suffix),
             ));
@@ -124,9 +125,9 @@ pub(crate) fn nonzero(integer: SignedInteger) -> syn::Result<TokenStream> {
     Ok(tokens)
 }
 
-fn check_zero(lit: impl quote::ToTokens, val: impl Zero) -> syn::Result<()> {
+fn check_zero(lit: impl ToTokens, val: impl Zero) -> Result<()> {
     if val.is_zero() {
-        Err(syn::Error::new_spanned(lit, "zero is not allowed"))
+        Err(Error::new_spanned(lit, "zero is not allowed"))
     } else {
         Ok(())
     }
