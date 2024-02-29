@@ -23,7 +23,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroUsize::new_unchecked(#lit)
+                    ::core::num::NonZeroUsize::new_unchecked(#lit)
                 }
             }
         }
@@ -32,7 +32,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroU8::new_unchecked(#lit)
+                    ::core::num::NonZeroU8::new_unchecked(#lit)
                 }
             }
         }
@@ -41,7 +41,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroU16::new_unchecked(#lit)
+                    ::core::num::NonZeroU16::new_unchecked(#lit)
                 }
             }
         }
@@ -50,7 +50,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroU32::new_unchecked(#lit)
+                    ::core::num::NonZeroU32::new_unchecked(#lit)
                 }
             }
         }
@@ -59,7 +59,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroU64::new_unchecked(#lit)
+                    ::core::num::NonZeroU64::new_unchecked(#lit)
                 }
             }
         }
@@ -71,7 +71,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroIsize::new_unchecked(#neg #lit)
+                    ::core::num::NonZeroIsize::new_unchecked(#neg #lit)
                 }
             }
         }
@@ -80,7 +80,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroI8::new_unchecked(#neg #lit)
+                    ::core::num::NonZeroI8::new_unchecked(#neg #lit)
                 }
             }
         }
@@ -89,7 +89,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroI16::new_unchecked(#neg #lit)
+                    ::core::num::NonZeroI16::new_unchecked(#neg #lit)
                 }
             }
         }
@@ -98,7 +98,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroI32::new_unchecked(#neg #lit)
+                    ::core::num::NonZeroI32::new_unchecked(#neg #lit)
                 }
             }
         }
@@ -107,7 +107,7 @@ pub(crate) fn nonzero(integer: SignedInteger) -> Result<TokenStream> {
             check_zero(&lit, val)?;
             quote! {
                 unsafe {
-                    core::num::NonZeroI64::new_unchecked(#neg #lit)
+                    ::core::num::NonZeroI64::new_unchecked(#neg #lit)
                 }
             }
         }
