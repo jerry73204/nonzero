@@ -6,6 +6,9 @@ use nonzero::nonzero as nz;
 
 #[test]
 fn test() {
+    // Make sure we don't shadow it accidentally.
+    mod core {}
+
     // unsigned integers
     assert_eq!(nz!(1usize), NonZeroUsize::new(1).unwrap());
     assert_eq!(nz!(1u8), NonZeroU8::new(1).unwrap());
